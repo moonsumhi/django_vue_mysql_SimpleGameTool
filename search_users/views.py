@@ -1,5 +1,6 @@
 from django.db import connection
-from django.http import JsonResponse
+from django.forms import model_to_dict
+from django.http import JsonResponse, Http404
 from django.shortcuts import render
 
 # Create your views here.
@@ -15,29 +16,19 @@ class UserTV(TemplateView):
 
 
 class UseridLV(BaseDetailView):
-    def get_queryset(self):
-        if self.kwargs != "":
-            return User.objects.filter(user_id=self.kwargs["user_id"])
+    def get_object(self, queryset=None):
+        if self.kwargs["pk"] != "":
+            print("pk: ", self.kwargs["pk"])
+            return User.objects.get(user_id=self.kwargs["pk"])
         else:
             return User.objects.none()
 
-    def render_to_response(self, context, **response_kwargs):
-        user_info = list(context["object_list"].values())
-        return JsonResponse(data=user_info, safe=False)
+    def get(self, request, *args, **kwargs):
+        user_info = self.get_object()
+        print("user_info: ", user_info)
+        print(user_info.gold)
+        if not user_info:
+            raise Http404("invalid user_id")
+        dict_user_info = model_to_dict(user_info)
 
-    # model.objects.get()
-    # try:
-    #     cursor = connection.cursor()
-    #
-    #     strSql = "SELECT code, name, author FROM bookstore_book"
-    #     result = cursor.execute(strSql)
-    #     books = cursor.fetchall()
-    #
-    #     connection.commit()
-    #     connection.close()
-    #
-    # except:
-    #     connection.rollback()
-    #     print("Failed selecting in BookListView")
-    #
-    # return render(request, "book_list.html", {"books": books})
+        return JsonResponse(data=dict_user_info)
