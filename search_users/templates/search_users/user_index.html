@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block title %}Django - Vue - MySQL{% endblock %}
+
+{% block extra-style %}
+    <style>
+        body {
+            text-align: center;
+            background-color: #ddd;
+        }
+        .inputBox {
+            margin: auto;
+            width: 70%;
+            background: white;
+            height: 50px;
+            border-radius: 50px;
+            line-height: 50px;
+        }
+        .inputBox .name {
+            border-style: none;
+            border-bottom: 1px solid #ddd;
+            width: 90px;
+            padding-left: 20px;
+            line-height: 20px;
+        }
+        .inputBox .item {
+            border-style: none;
+            border-bottom: 1px solid #ddd;
+            width: 400px;
+            margin-left: 50px;
+            padding-left: 20px;
+            line-height: 20px;
+        }
+        .todoList {
+            list-style: none;
+            padding: 10px 0;
+            text-align: left;
+        }
+        .todoList li {
+            display: flex;
+            height: 50px;
+            line-height: 50px;
+            margin: 0.5rem 0;
+            padding: 0 0.9rem;
+            background: white;
+            border-radius: 5px;
+        }
+        .removeBtn {
+            margin-left: auto;
+            font-size: 20px;
+        }
+        .removeBtn:hover{
+            color: red;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div id='app'>
+
+    <h1>게임 유저 검색</h1>
+    <br>
+
+    <div class="input-group mb-3">
+      <input type="text" class="form-control" placeholder="ID" v-model.trim="user_id"
+          v-on:keyup.enter="search_user()">
+      <button class="btn btn-outline-secondary" v-on:click="search_user(user_id)">search</button>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra-script %}
+<script src="https://unpkg.com/vue/dist/vue.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+
+    axios.defaults.xsrfCookieName = 'csrftoken';
+    axios.defaults.xsrfHeaderName = 'X-CSRFToken';
+
+    var vm = new Vue({
+        delimiters: ['[[', ']]'],
+        el: '#app',
+        data: {
+            user_id: '',
+            user_info: {},
+        },
+        methods: {
+            search_user: function(user_id){
+              console.log("search_user()...");
+              if (user_id == '') return;
+
+              var vm = this;
+              axios.get('/users/ids/'+ user_id + '/')
+                  .then(function(res){
+                    console.log("SEARCH GET RES", res);
+                    vm.user_info = res.data;
+                  })
+                  .catch(function(err){
+                    console.log("SEARCH ERR", err);
+                  })
+
+
+            },
+        },
+
+    })
+</script>
+{% endblock %}
