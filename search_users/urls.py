@@ -21,5 +21,4 @@ app_name = "users"
 urlpatterns = [
     path("", views.UserTV.as_view(), name="index"),
     path("ids/<str:pk>/", views.UseridDV.as_view(), name="list"),
-    path("ids/info/<str:pk>/", views.UserinfoDV.as_view(), name="detail"),
 ]

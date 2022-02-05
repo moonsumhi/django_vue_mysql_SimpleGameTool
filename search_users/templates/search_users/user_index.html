@@ -23,6 +23,7 @@
 {% block content %}
 <div id='app'>
 
+    <br>
     <h1>게임 유저 검색</h1>
     <br>
 
@@ -69,29 +70,19 @@
       </thead>
       <tbody>
         <tr>
-          <th scope="row"> user_id </th>
-          <td>[[ user_info.user_id ]]</td>
-          <td><button class="btn btn-info btn-sm">수정</button></td>
-        </tr>
-        <tr>
-          <th scope="row"> name </th>
-          <td>[[ user_info.name ]]</td>
-          <td><button class="btn btn-info btn-sm">수정</button></td>
-        </tr>
-        <tr>
           <th scope="row"> gold </th>
-          <td>[[ user_info.gold ]]</td>
-          <td><button class="btn btn-info btn-sm">수정</button></td>
+          <td><input type="text" class="form-control" v-model.trim="gold"></td>
+          <td><button class="btn btn-info btn-sm" v-on:click="update_data('gold', gold)">수정</button></td>
         </tr>
         <tr>
           <th scope="row"> level </th>
-          <td>[[ user_info.level ]]</td>
-          <td><button class="btn btn-info btn-sm">수정</button></td>
+          <td><input type="text" class="form-control" v-model.trim="level"></td>
+          <td><button class="btn btn-info btn-sm" v-on:click="update_data('level', level)">수정</button></td>
         </tr>
         <tr>
           <th scope="row"> inventory </th>
-          <td>[[ user_info.inventory ]]</td>
-          <td><button class="btn btn-info btn-sm">수정</button></td>
+          <td><input type="text" class="form-control" v-model.trim="inventory"></td>
+          <td><button class="btn btn-info btn-sm" v-on:click="update_data('inventory', inventory)">수정</button></td>
         </tr>
       </tbody>
     </table>
@@ -114,6 +105,9 @@
             user_id: '',
             user_info: {},
             detail_show: false,
+            gold: '',
+            level: '',
+            inventory: [],
         },
         methods: {
             search_user: function(user_id){
@@ -137,6 +131,22 @@
               else{
                 this.detail_show = false;
               }
+            },
+
+            update_data:function(k, v){
+              console.log("UPDATE ", k, v);
+
+              var vm = this;
+              var postData = {[k] : v};
+              console.log(postData);
+              axios.post('/users/ids/' + this.user_info['user_id'] + '/', postData)
+                  .then(function(res){
+                    console.log("UPDATE POST RES", res);
+                  })
+                  .catch(function(err){
+                    console.log("UPDATE POST ERR", err);
+                  })
+              this.v = '';
             },
         },
 
