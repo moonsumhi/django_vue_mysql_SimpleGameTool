@@ -7,42 +7,8 @@
             text-align: center;
             background-color: #ddd;
         }
-        .inputBox {
-            margin: auto;
-            width: 70%;
-            background: white;
-            height: 50px;
-            border-radius: 50px;
-            line-height: 50px;
-        }
-        .inputBox .name {
-            border-style: none;
-            border-bottom: 1px solid #ddd;
-            width: 90px;
-            padding-left: 20px;
-            line-height: 20px;
-        }
-        .inputBox .item {
-            border-style: none;
-            border-bottom: 1px solid #ddd;
-            width: 400px;
-            margin-left: 50px;
-            padding-left: 20px;
-            line-height: 20px;
-        }
-        .todoList {
-            list-style: none;
-            padding: 10px 0;
-            text-align: left;
-        }
-        .todoList li {
-            display: flex;
-            height: 50px;
-            line-height: 50px;
-            margin: 0.5rem 0;
-            padding: 0 0.9rem;
-            background: white;
-            border-radius: 5px;
+        .user_row:hover{
+            background-color:#fefefe;
         }
         .removeBtn {
             margin-left: auto;
@@ -66,6 +32,70 @@
       <button class="btn btn-outline-secondary" v-on:click="search_user(user_id)">search</button>
     </div>
 
+    <br>
+    <h3>검색 결과</h3>
+    <br>
+
+    <table class="table">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Name</th>
+          <th scope="col">Created at</th>
+          <th scope="col">Gold</th>
+          <th scope="col">Level</th>
+          <th scope="col">Inventory</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="user_row" v-on:click="detail_user(user_id)">
+          <th scope="row">[[ user_info.user_id ]]</th>
+          <td>[[ user_info.name ]]</td>
+          <td>[[ user_info.created_at ]]</td>
+          <td>[[ user_info.gold ]]</td>
+          <td>[[ user_info.level ]]</td>
+          <td>[[ user_info.inventory ]]</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table class="table table-dark" v-show="detail_show">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">이름</th>
+          <th scope="col">값</th>
+          <th scope="col">액션</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row"> user_id </th>
+          <td>[[ user_info.user_id ]]</td>
+          <td><button class="btn btn-info btn-sm">수정</button></td>
+        </tr>
+        <tr>
+          <th scope="row"> name </th>
+          <td>[[ user_info.name ]]</td>
+          <td><button class="btn btn-info btn-sm">수정</button></td>
+        </tr>
+        <tr>
+          <th scope="row"> gold </th>
+          <td>[[ user_info.gold ]]</td>
+          <td><button class="btn btn-info btn-sm">수정</button></td>
+        </tr>
+        <tr>
+          <th scope="row"> level </th>
+          <td>[[ user_info.level ]]</td>
+          <td><button class="btn btn-info btn-sm">수정</button></td>
+        </tr>
+        <tr>
+          <th scope="row"> inventory </th>
+          <td>[[ user_info.inventory ]]</td>
+          <td><button class="btn btn-info btn-sm">수정</button></td>
+        </tr>
+      </tbody>
+    </table>
+
 </div>
 {% endblock %}
 
@@ -83,6 +113,7 @@
         data: {
             user_id: '',
             user_info: {},
+            detail_show: false,
         },
         methods: {
             search_user: function(user_id){
@@ -98,8 +129,14 @@
                   .catch(function(err){
                     console.log("SEARCH ERR", err);
                   })
-
-
+            },
+            detail_user:function(user_id){
+              if (this.detail_show == false){
+                this.detail_show = true;
+              }
+              else{
+                this.detail_show = false;
+              }
             },
         },
 

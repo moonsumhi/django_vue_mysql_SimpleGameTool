@@ -15,20 +15,19 @@ class UserTV(TemplateView):
     template_name = "search_users/user_index.html"
 
 
-class UseridLV(BaseDetailView):
+class UseridDV(BaseDetailView):
     def get_object(self, queryset=None):
         if self.kwargs["pk"] != "":
-            print("pk: ", self.kwargs["pk"])
-            return User.objects.get(user_id=self.kwargs["pk"])
+            return User.objects.filter(user_id=self.kwargs["pk"]).values()
         else:
             return User.objects.none()
 
     def get(self, request, *args, **kwargs):
         user_info = self.get_object()
-        print("user_info: ", user_info)
-        print(user_info.gold)
         if not user_info:
-            raise Http404("invalid user_id")
-        dict_user_info = model_to_dict(user_info)
+            return JsonResponse(data={})
+        return JsonResponse(data=user_info[0])
 
-        return JsonResponse(data=dict_user_info)
+
+class UserinfoDV(BaseDetailView):
+    pass
