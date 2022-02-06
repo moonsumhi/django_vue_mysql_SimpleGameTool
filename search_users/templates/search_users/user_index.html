@@ -17,6 +17,10 @@
         .removeBtn:hover{
             color: red;
         }
+
+        i:hover{
+            cursor: pointer;
+        }
     </style>
 {% endblock %}
 
@@ -29,14 +33,18 @@
 
     <div class="input-group mb-3">
       <input type="text" class="form-control" placeholder="ID" v-model.trim="user_id"
-          v-on:keyup.enter="search_user()">
+          v-on:keyup.enter="search_user(user_id)">
       <button class="btn btn-outline-secondary" v-on:click="search_user(user_id)">search</button>
     </div>
 
     <br>
-    <h3>검색 결과</h3>
+    <h3>
+        검색 결과
+        <span v-on:click="search_user(user_id)">
+            <i class="fas fa-redo"></i>
+        </span>
+    </h3>
     <br>
-
     <table class="table">
       <thead class="thead-dark">
         <tr>
@@ -56,6 +64,7 @@
           <td>[[ user_info.gold ]]</td>
           <td>[[ user_info.level ]]</td>
           <td>[[ user_info.inventory ]]</td>
+          <td></td>
         </tr>
       </tbody>
     </table>
@@ -86,7 +95,7 @@
         </tr>
       </tbody>
     </table>
-
+    <button type="button" class="btn btn-danger" v-show="detail_show" v-on:click="delete_data(user_id)">제재</button>
 </div>
 {% endblock %}
 
@@ -125,6 +134,9 @@
                   })
             },
             detail_user:function(user_id){
+
+              if (this.user_info["user_id"] == undefined) return;
+              
               if (this.detail_show == false){
                 this.detail_show = true;
               }
@@ -135,6 +147,7 @@
 
             update_data:function(k, v){
               console.log("UPDATE ", k, v);
+              if (confirm("수정하시겠습니까?") == false) return;
 
               var vm = this;
               var postData = {[k] : v};
@@ -142,11 +155,33 @@
               axios.post('/users/ids/' + this.user_info['user_id'] + '/', postData)
                   .then(function(res){
                     console.log("UPDATE POST RES", res);
+                    vm.search_user(vm.user_info["user_id"]);
                   })
                   .catch(function(err){
                     console.log("UPDATE POST ERR", err);
                   })
               this.v = '';
+              this.gold = '';
+              this.level = '';
+              this.inventory = '';
+
+            },
+
+            delete_data:function(user_id){
+              console.log("delete_data()...");
+              if (confirm("삭제하시겠습니까?") == false) return;
+
+              var vm = this;
+              axios.delete('/users/ids/ban/' + this.user_info['user_id'] + '/')
+                  .then(function(res){
+                    console.log("DELETE RES", res);
+                    vm.search_user(vm.user_info["user_id"]);
+                    vm.detail_show = false;
+                  })
+                  .catch(function(err){
+                    console.log("DELETE ERR", err);
+                  })
+
             },
         },
 

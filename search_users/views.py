@@ -4,8 +4,7 @@ from django.http import JsonResponse
 
 # Create your views here.
 from django.views.generic import TemplateView
-from django.views.generic.detail import BaseDetailView
-from django.views.generic.edit import BaseFormView
+from django.views.generic.edit import BaseFormView, BaseDeleteView
 
 from search_users.models import User
 
@@ -14,7 +13,7 @@ class UserTV(TemplateView):
     template_name = "search_users/user_index.html"
 
 
-class UseridDV(BaseFormView):
+class UseridFV(BaseFormView):
     def get_object(self, queryset=None):
         if self.kwargs["pk"] != "":
             return User.objects.filter(user_id=self.kwargs["pk"]).values()
@@ -37,3 +36,12 @@ class UseridDV(BaseFormView):
             new_item = {new_key: int(new_value)}
         User.objects.filter(pk=user_info["user_id"]).update(**new_item)
         return JsonResponse(data=user_info)
+
+
+class UserbanDelV(BaseDeleteView):
+    def delete(self, request, *args, **kwargs):
+        user_id = self.kwargs["pk"]
+        if user_id != "":
+            user = User.objects.get(user_id=user_id)
+            user.delete()
+        return JsonResponse(data={})

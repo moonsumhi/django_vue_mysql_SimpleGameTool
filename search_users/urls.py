@@ -20,5 +20,6 @@ from . import views
 app_name = "users"
 urlpatterns = [
     path("", views.UserTV.as_view(), name="index"),
-    path("ids/<str:pk>/", views.UseridDV.as_view(), name="list"),
+    path("ids/<str:pk>/", views.UseridFV.as_view(), name="list"),
+    path("ids/ban/<str:pk>/", views.UserbanDelV.as_view(), name="ban"),
 ]
